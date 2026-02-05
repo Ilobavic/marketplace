@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { products } from './data';
 import ProductList from './components/ProductList';
 import Cart from './components/Cart';
+import { Container, Navbar, Nav, Badge, Button } from 'react-bootstrap';
 import './App.css';
 
 function App() {
@@ -19,7 +20,7 @@ function App() {
         return [...prevCart, { ...product, quantity: 1 }];
       }
     });
-    alert(`${product.name} added to cart!`);
+    // alert(`${product.name} added to cart!`); // Removed alert for better UX
   };
 
   const removeFromCart = (productId) => {
@@ -42,15 +43,31 @@ function App() {
 
   return (
     <div className="App">
-      <header className="navbar">
-        <h1>My Shop</h1>
-        <button onClick={() => setView('products')}>Products</button>
-        <button onClick={() => setView('cart')}>
-          Cart ({cartItemCount})
-        </button>
-      </header>
+      <Navbar bg="dark" variant="dark" expand="lg" sticky="top" className="mb-4">
+        <Container>
+          <Navbar.Brand href="#" onClick={() => setView('products')} className="d-flex align-items-center">
+            <img
+              alt="Logo"
+              src="https://cdn-icons-png.flaticon.com/512/3081/3081559.png"
+              width="30"
+              height="30"
+              className="d-inline-block align-top me-2"
+            />{' '}
+            LuxMarket
+          </Navbar.Brand>
+          <Navbar.Toggle aria-controls="basic-navbar-nav" />
+          <Navbar.Collapse id="basic-navbar-nav">
+            <Nav className="ms-auto">
+              <Nav.Link onClick={() => setView('products')} active={view === 'products'}>Products</Nav.Link>
+              <Nav.Link onClick={() => setView('cart')} active={view === 'cart'}>
+                Cart <Badge bg="primary">{cartItemCount}</Badge>
+              </Nav.Link>
+            </Nav>
+          </Navbar.Collapse>
+        </Container>
+      </Navbar>
 
-      <main>
+      <Container>
         {view === 'products' ? (
           <ProductList products={products} addToCart={addToCart} />
         ) : (
@@ -60,7 +77,11 @@ function App() {
             updateQuantity={updateQuantity} 
           />
         )}
-      </main>
+      </Container>
+      
+      <footer className="text-center py-4 mt-5 bg-light">
+        <p className="mb-0 text-muted">&copy; 2024 LuxMarket. All rights reserved.</p>
+      </footer>
     </div>
   );
 }
