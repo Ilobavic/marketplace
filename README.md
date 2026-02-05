@@ -55,3 +55,16 @@ By combining React’s component-based architecture with Bootstrap’s responsiv
 ---
 
 *Logo designed with [Canva](https://www.canva.com/)*
+
+## images missing 
+air max 90
+travis scoot jordan 1 low 
+crocs pollex clog
+solomon xt 6
+dr martens 1460
+birkens boston nike kyrie infinty off white caravaggio tee
+carhartt work jacket 
+new era ny cap
+seiko 5 sports 
+hermes tie 
+travel duffle bag 
