@@ -1,94 +1,43 @@
-import React, { useMemo, useState } from 'react';
-import { Row, Col, Card, Button, Form, InputGroup, Badge } from 'react-bootstrap';
+﻿import React from 'react';
+import { Row, Col } from 'react-bootstrap';
 
 export default function ProductList({ products, addToCart }) {
-  const [query, setQuery] = useState('');
-  const [category, setCategory] = useState('All');
-
-  const categories = [
-    { label: 'All' },
-    { label: 'Sneakers' },
-    { label: 'Apparel' },
-    { label: 'Accessories' },
-  ];
-
-  const categorized = useMemo(() => {
-    return products.map((product) => {
-      if (product.id >= 16 && product.id <= 30) return { ...product, category: 'Apparel' };
-      if ((product.id >= 31 && product.id <= 45) || product.id >= 66) return { ...product, category: 'Accessories' };
-      return { ...product, category: 'Sneakers' };
-    });
-  }, [products]);
-
-  const filteredProducts = useMemo(() => {
-    return categorized.filter((product) => {
-      const matchesCategory = category === 'All' || product.category === category;
-      const matchesQuery = product.name.toLowerCase().includes(query.trim().toLowerCase());
-      return matchesCategory && matchesQuery;
-    });
-  }, [categorized, category, query]);
-
-  const formatPrice = (price) => `NGN ${price.toLocaleString()}`;
-
   return (
     <div className="product-list-container">
-      <div className="section-head">
-        <div>
-          <p className="eyebrow">Featured collection</p>
-          <h2>Shop the latest drops</h2>
-        </div>
-        <InputGroup className="search-input">
-          <InputGroup.Text>Search</InputGroup.Text>
-          <Form.Control
-            placeholder="Sneakers, bags, watches..."
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-          />
-        </InputGroup>
-      </div>
-
-      <div className="category-row">
-        {categories.map((item) => (
-          <button
-            key={item.label}
-            type="button"
-            className={`category-pill ${category === item.label ? 'active' : ''}`}
-            onClick={() => setCategory(item.label)}
-          >
-            {item.label}
-          </button>
-        ))}
-        <Badge bg="dark" className="ms-auto">{filteredProducts.length} items</Badge>
-      </div>
-
+      <h2 className="mb-4 text-center">Featured Collection</h2>
       <Row xs={1} md={2} lg={3} xl={4} className="g-4">
-        {filteredProducts.map((product) => (
+        {products.map((product) => (
           <Col key={product.id}>
-            <Card className="h-100 border-0 product-card-hover lux-card">
-              <div className="card-img-wrapper">
-                <Card.Img
-                  variant="top"
-                  src={product.image}
-                  alt={product.name}
-                />
-                <span className="card-chip">{product.category}</span>
-              </div>
-              <Card.Body className="d-flex flex-column">
-                <Card.Title className="product-title">{product.name}</Card.Title>
-                <Card.Text className="product-price">{formatPrice(product.price)}</Card.Text>
-                <div className="mt-auto d-flex gap-2">
-                  <Button
-                    className="uiverse-btn"
-                    onClick={() => addToCart(product)}
-                  >
-                    Add to cart
-                  </Button>
-                  <Button variant="outline-dark" className="ghost-btn">
-                    View
-                  </Button>
+            <article className="retro-card">
+              <div className="retro-media" aria-hidden="true">
+                <div className="retro-sweater">
+                  <div className="sweater-collar" />
+                  <div className="sweater-arm sweater-arm-left" />
+                  <div className="sweater-arm sweater-arm-right" />
+                  <div className="sweater-base" />
                 </div>
-              </Card.Body>
-            </Card>
+              </div>
+              <div className="retro-body">
+                <h3 className="retro-title">{product.name}</h3>
+                <p className="retro-desc">
+                  Product description. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                </p>
+              </div>
+              <div className="retro-divider" role="presentation" />
+              <div className="retro-footer">
+                <span className="retro-price">${product.price.toFixed(2)}</span>
+                <button
+                  type="button"
+                  className="retro-cart-btn"
+                  onClick={() => addToCart(product)}
+                  aria-label={`Add ${product.name} to cart`}
+                >
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M7 18c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm10 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zM6.2 5h13.9c.6 0 1 .5.9 1.1l-1.3 7.2c-.1.5-.5.9-1 .9H8.2c-.5 0-.9-.3-1-.8L5.4 3.7H2.5a.9.9 0 1 1 0-1.8h3.6c.4 0 .7.3.8.6L7.4 5z" />
+                  </svg>
+                </button>
+              </div>
+            </article>
           </Col>
         ))}
       </Row>

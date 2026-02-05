@@ -7,6 +7,10 @@
   --lux-gold: #c2a77b;
   --lux-mist: #e8dfd5;
   --lux-shadow: 0 20px 50px rgba(29, 29, 31, 0.12);
+  --retro-border: #2c2c2e;
+  --retro-shadow: #1d1d1f;
+  --retro-accent: #2b6df3;
+  --retro-muted: #6f6f73;
 }
 
 #root {
@@ -245,6 +249,155 @@
 /* Product section */
 .product-shell {
   padding: 3.5rem 0 4.5rem;
+}
+
+.retro-card {
+  width: 230px;
+  height: 300px;
+  background: #fff;
+  border: 2px solid var(--retro-border);
+  box-shadow: 5px 5px 0 var(--retro-shadow);
+  border-radius: 18px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 1rem 1.1rem 0.9rem;
+  margin: 0 auto;
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.retro-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 7px 7px 0 var(--retro-shadow);
+}
+
+.retro-media {
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.retro-sweater {
+  position: relative;
+  width: 120px;
+  height: 95px;
+  background: #1f8f2e;
+  border-radius: 16px 16px 12px 12px;
+  box-shadow: inset 0 -6px 0 rgba(0, 0, 0, 0.12);
+  transition: transform 0.4s ease;
+}
+
+.retro-card:hover .retro-sweater {
+  transform: translateY(-6px);
+}
+
+.sweater-collar {
+  position: absolute;
+  top: -8px;
+  left: 42px;
+  width: 36px;
+  height: 18px;
+  background: #f4c7c2;
+  border-radius: 12px 12px 6px 6px;
+  border: 2px solid #2b2b2b;
+}
+
+.sweater-arm {
+  position: absolute;
+  top: 22px;
+  width: 30px;
+  height: 50px;
+  background: #1f8f2e;
+  border-radius: 12px;
+}
+
+.sweater-arm-left {
+  left: -18px;
+  transform: rotate(8deg);
+}
+
+.sweater-arm-right {
+  right: -18px;
+  transform: rotate(-8deg);
+}
+
+.sweater-base {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  right: 10px;
+  height: 8px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 6px;
+}
+
+.retro-body {
+  text-align: center;
+  display: grid;
+  gap: 0.35rem;
+}
+
+.retro-title {
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.retro-desc {
+  font-size: 0.82rem;
+  color: var(--retro-muted);
+  margin: 0;
+  line-height: 1.35;
+}
+
+.retro-divider {
+  height: 1px;
+  background: rgba(44, 44, 46, 0.3);
+  margin: 0.2rem 0 0.4rem;
+}
+
+.retro-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.retro-price {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--retro-border);
+}
+
+.retro-cart-btn {
+  width: 44px;
+  height: 36px;
+  border: 2px solid var(--retro-border);
+  background: #fff;
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+  transition: border-color 0.3s ease, transform 0.15s ease;
+}
+
+.retro-cart-btn svg {
+  width: 20px;
+  height: 20px;
+  fill: var(--retro-border);
+  transition: fill 0.3s ease;
+}
+
+.retro-cart-btn:hover {
+  border-color: var(--retro-accent);
+}
+
+.retro-cart-btn:hover svg {
+  fill: var(--retro-accent);
+}
+
+.retro-cart-btn:active {
+  transform: translateY(2px);
 }
 
 .section-head {
