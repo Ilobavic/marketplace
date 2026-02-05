@@ -2,12 +2,15 @@ import React, { useState } from 'react';
 import { products } from './data';
 import ProductList from './components/ProductList';
 import Cart from './components/Cart';
+import ProductDetail from './components/ProductDetail';
+import Payout from './components/Payout';
 import { Container, Navbar, Nav, Badge, Button } from 'react-bootstrap';
 import './App.css';
 
 function App() {
   const [cart, setCart] = useState([]);
-  const [view, setView] = useState('products'); // 'products' or 'cart'
+  const [view, setView] = useState('products');
+  const [selectedProduct, setSelectedProduct] = useState(null);
 
   const addToCart = (product) => {
     setCart((prevCart) => {
@@ -20,7 +23,6 @@ function App() {
         return [...prevCart, { ...product, quantity: 1 }];
       }
     });
-    // alert(`${product.name} added to cart!`); // Removed alert for better UX
   };
 
   const removeFromCart = (productId) => {
@@ -40,6 +42,12 @@ function App() {
   };
 
   const cartItemCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+  const cartTotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+  const openProductDetail = (product) => {
+    setSelectedProduct(product);
+    setView('detail');
+  };
 
   return (
     <div className="App">
@@ -66,6 +74,9 @@ function App() {
               </Nav.Link>
               <Nav.Link onClick={() => setView('cart')} active={view === 'cart'}>
                 Cart <Badge bg="dark" className="ms-1">{cartItemCount}</Badge>
+              </Nav.Link>
+              <Nav.Link onClick={() => setView('payout')} active={view === 'payout'}>
+                Payout
               </Nav.Link>
               <Button variant="outline-light" className="pill-btn">
                 Join the Club
@@ -195,16 +206,34 @@ function App() {
           </section>
 
           <Container className="product-shell">
-            <ProductList products={products} addToCart={addToCart} />
+            <ProductList
+              products={products}
+              addToCart={addToCart}
+              onView={openProductDetail}
+            />
           </Container>
         </>
-      ) : (
+      ) : view === 'cart' ? (
         <Container className="cart-shell">
           <Cart
             cartItems={cart}
             removeFromCart={removeFromCart}
             updateQuantity={updateQuantity}
+            onCheckout={() => setView('payout')}
           />
+        </Container>
+      ) : view === 'detail' && selectedProduct ? (
+        <Container className="detail-shell">
+          <ProductDetail
+            product={selectedProduct}
+            onBack={() => setView('products')}
+            addToCart={addToCart}
+            onBuyNow={() => setView('payout')}
+          />
+        </Container>
+      ) : (
+        <Container className="payout-shell">
+          <Payout total={cartTotal} onBack={() => setView('cart')} />
         </Container>
       )}
 
