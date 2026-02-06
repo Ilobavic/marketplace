@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect } from 'react';
+import React, { useMemo, useState, useEffect, useRef } from 'react';
 import { products } from './data';
 import ProductList from './components/ProductList';
 import Cart from './components/Cart';
@@ -155,13 +155,13 @@ function Home() {
           <div className="proof-grid">
             <div className="proof-card">
               <p className="eyebrow">Trusted by stylists</p>
-              <h3>“The fastest way to build a luxe wardrobe.”</h3>
-              <span>— Kemi Odumosu, Fashion Editor</span>
+              <h3>ï¿½The fastest way to build a luxe wardrobe.ï¿½</h3>
+              <span>ï¿½ Kemi Odumosu, Fashion Editor</span>
             </div>
             <div className="proof-card">
               <p className="eyebrow">Press highlight</p>
-              <h3>“A sleek marketplace with concierge-level service.”</h3>
-              <span>— Style Atlas Weekly</span>
+              <h3>ï¿½A sleek marketplace with concierge-level service.ï¿½</h3>
+              <span>ï¿½ Style Atlas Weekly</span>
             </div>
             <div className="proof-card">
               <p className="eyebrow">Community rating</p>
@@ -221,19 +221,28 @@ function App() {
   const [cart, setCart] = useState([]);
   const [clubEmail, setClubEmail] = useState('');
   const [clubStatus, setClubStatus] = useState('idle');
+  const [isNavExpanded, setIsNavExpanded] = useState(false);
+  const [cartPulse, setCartPulse] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const navRef = useRef(null);
   const location = useLocation();
   const navigate = useNavigate();
 
   useEffect(() => {
+    const timer = setTimeout(() => setIsLoading(false), 1400);
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
     const path = location.pathname;
     if (path.startsWith('/cart')) {
-      document.title = 'Your Cart — LuxMarket';
+      document.title = 'Your Cart ï¿½ LuxMarket';
     } else if (path.startsWith('/payout')) {
-      document.title = 'Checkout — LuxMarket';
+      document.title = 'Checkout ï¿½ LuxMarket';
     } else if (path.startsWith('/product')) {
-      document.title = 'Product details — LuxMarket';
+      document.title = 'Product details ï¿½ LuxMarket';
     } else {
-      document.title = 'LuxMarket — Modern fashion marketplace';
+      document.title = 'LuxMarket ï¿½ Modern fashion marketplace';
     }
   }, [location.pathname]);
 
@@ -246,7 +255,32 @@ function App() {
     } else {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
+    const closeTimer = setTimeout(() => setIsNavExpanded(false), 0);
+    return () => clearTimeout(closeTimer);
   }, [location]);
+
+  useEffect(() => {
+    if (cart.length > 0) {
+      const startTimer = setTimeout(() => setCartPulse(true), 0);
+      const timer = setTimeout(() => setCartPulse(false), 420);
+      return () => {
+        clearTimeout(startTimer);
+        clearTimeout(timer);
+      };
+    }
+  }, [cart.length]);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (!isNavExpanded) return;
+      if (navRef.current && !navRef.current.contains(event.target)) {
+        setIsNavExpanded(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [isNavExpanded]);
 
   const addToCart = (product) => {
     setCart((prevCart) => {
@@ -290,9 +324,33 @@ function App() {
   };
 
   return (
-    <div className="App">
+    <div className="App" onClick={() => isNavExpanded && setIsNavExpanded(false)}>
+      {isLoading && (
+        <div className="loader-overlay" aria-live="polite" aria-busy="true">
+          <div className="loader" role="status">
+            <div className="text"><span>Loading</span></div>
+            <div className="text"><span>Loading</span></div>
+            <div className="text"><span>Loading</span></div>
+            <div className="text"><span>Loading</span></div>
+            <div className="text"><span>Loading</span></div>
+            <div className="text"><span>Loading</span></div>
+            <div className="text"><span>Loading</span></div>
+            <div className="text"><span>Loading</span></div>
+            <div className="text"><span>Loading</span></div>
+            <div className="line" />
+          </div>
+        </div>
+      )}
       <a className="skip-link" href="#main">Skip to content</a>
-      <Navbar expand="lg" sticky="top" className="lux-nav">
+      <Navbar
+        expand="lg"
+        sticky="top"
+        className="lux-nav"
+        expanded={isNavExpanded}
+        onToggle={(nextExpanded) => setIsNavExpanded(nextExpanded)}
+        ref={navRef}
+        onClick={(event) => event.stopPropagation()}
+      >
         <Container>
           <Navbar.Brand as={Link} to="/" className="d-flex align-items-center gap-2">
             <img
@@ -308,14 +366,16 @@ function App() {
               <small>Modern fashion marketplace</small>
             </div>
           </Navbar.Brand>
-          <Navbar.Toggle aria-controls="lux-nav" />
+          <Navbar.Toggle aria-controls="lux-nav">
+            <span className="navbar-toggler-icon"><span /></span>
+          </Navbar.Toggle>
           <Navbar.Collapse id="lux-nav">
             <Nav className="ms-auto align-items-lg-center gap-lg-3">
               <Nav.Link as={NavLink} to="/" end>
                 Shop
               </Nav.Link>
               <Nav.Link as={NavLink} to="/cart">
-                Cart <Badge bg="dark" className="ms-1">{cartItemCount}</Badge>
+                Cart <Badge bg="dark" className={`ms-1 cart-badge ${cartPulse ? 'pulse' : ''}`}>{cartItemCount}</Badge>
               </Nav.Link>
               <Nav.Link as={NavLink} to="/payout">
                 Payout
