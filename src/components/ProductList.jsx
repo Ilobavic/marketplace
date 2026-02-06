@@ -64,6 +64,7 @@ export default function ProductList({ products, addToCart, onView }) {
               placeholder="Sneakers, bags, watches..."
               value={query}
               onChange={(event) => setQuery(event.target.value)}
+              aria-label="Search products"
             />
           </label>
           <Form.Select
@@ -142,6 +143,8 @@ export default function ProductList({ products, addToCart, onView }) {
                     variant="top"
                     src={product.image}
                     alt={product.name}
+                    loading="lazy"
+                    decoding="async"
                   />
                   <span className="card-chip">{product.category}</span>
                 </div>
@@ -153,6 +156,7 @@ export default function ProductList({ products, addToCart, onView }) {
                       type="button"
                       className="uiverse-cart-btn"
                       onClick={() => addToCart(product)}
+                      aria-label={`Add ${product.name} to cart`}
                     >
                       <span className="uiverse-cart-icon">
                         <svg
@@ -170,6 +174,7 @@ export default function ProductList({ products, addToCart, onView }) {
                       variant="outline-dark"
                       className="ghost-btn"
                       onClick={() => onView?.(product)}
+                      aria-label={`View details for ${product.name}`}
                     >
                       View
                     </Button>

@@ -60,7 +60,7 @@ export default function Payout({ total, onBack }) {
 
         <div className="payout-panel">
           <h4>Payment status</h4>
-          <p className="status-text">
+          <p className="status-text" aria-live="polite">
             {status === 'idle' && 'Ready to confirm.'}
             {status === 'processing' && 'Processing your payment...'}
             {status === 'confirmed' && 'Payment confirmed. Receipt sent.'}

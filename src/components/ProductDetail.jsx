@@ -17,7 +17,7 @@ export default function ProductDetail({ product, onBack, addToCart, onBuyNow }) 
       </button>
       <div className="detail-grid">
         <div className="detail-media">
-          <img src={product.image} alt={product.name} />
+          <img src={product.image} alt={product.name} loading="lazy" decoding="async" />
         </div>
         <div className="detail-info">
           <p className="eyebrow">Limited edit</p>
@@ -74,6 +74,7 @@ export default function ProductDetail({ product, onBack, addToCart, onBuyNow }) 
                 type="button"
                 className="uiverse-cart-btn"
                 onClick={() => addToCart(product)}
+                aria-label={`Add ${product.name} to cart`}
               >
                 <span className="uiverse-cart-icon">
                   <svg

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, Button, ListGroup, Row, Col, Image } from 'react-bootstrap';
 
-export default function Cart({ cartItems, removeFromCart, updateQuantity, onCheckout }) {
+export default function Cart({ cartItems, removeFromCart, updateQuantity, onCheckout, onBrowse }) {
   const formatPrice = (price) => `NGN ${price.toLocaleString()}`;
   const total = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
@@ -19,7 +19,9 @@ export default function Cart({ cartItems, removeFromCart, updateQuantity, onChec
           <Card.Body>
             <h4>Your cart is currently empty.</h4>
             <p>Start shopping to add items to your cart.</p>
-            <Button variant="dark" className="pill-btn">Browse collections</Button>
+            <Button variant="dark" className="pill-btn" onClick={onBrowse}>
+              Browse collections
+            </Button>
           </Card.Body>
         </Card>
       ) : (
@@ -31,7 +33,7 @@ export default function Cart({ cartItems, removeFromCart, updateQuantity, onChec
                   <ListGroup.Item key={item.id} className="p-3">
                     <Row className="align-items-center">
                       <Col xs={3} sm={2}>
-                        <Image src={item.image} alt={item.name} fluid rounded />
+                        <Image src={item.image} alt={item.name} fluid rounded loading="lazy" decoding="async" />
                       </Col>
                       <Col xs={9} sm={4}>
                         <h6 className="mb-0">{item.name}</h6>
