@@ -328,15 +328,15 @@ function App() {
       {isLoading && (
         <div className="loader-overlay" aria-live="polite" aria-busy="true">
           <div className="loader" role="status">
-            <div className="text"><span>Loading</span></div>
-            <div className="text"><span>Loading</span></div>
-            <div className="text"><span>Loading</span></div>
-            <div className="text"><span>Loading</span></div>
-            <div className="text"><span>Loading</span></div>
-            <div className="text"><span>Loading</span></div>
-            <div className="text"><span>Loading</span></div>
-            <div className="text"><span>Loading</span></div>
-            <div className="text"><span>Loading</span></div>
+            <div className="text"><span>LUXMARKET</span></div>
+            <div className="text"><span>LUXMARKET</span></div>
+            <div className="text"><span>LUXMARKET</span></div>
+            <div className="text"><span>LUXMARKET</span></div>
+            <div className="text"><span>LUXMARKET</span></div>
+            <div className="text"><span>LUXMARKET</span></div>
+            <div className="text"><span>LUXMARKET</span></div>
+            <div className="text"><span>LUXMARKET</span></div>
+            <div className="text"><span>LUXMARKET</span></div>
             <div className="line" />
           </div>
         </div>
@@ -513,3 +513,5 @@ function App() {
 }
 
 export default App;
+
+
