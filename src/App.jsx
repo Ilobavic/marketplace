@@ -366,29 +366,22 @@ function App() {
               <small>Modern fashion marketplace</small>
             </div>
           </Navbar.Brand>
-          <Navbar.Toggle aria-controls="lux-nav">
-            <span className="navbar-toggler-icon"><span /></span>
-          </Navbar.Toggle>
-          <Navbar.Collapse id="lux-nav">
-            <Nav className="ms-auto align-items-lg-center gap-lg-3">
-              <Nav.Link as={NavLink} to="/" end>
-                Shop
-              </Nav.Link>
-              <Nav.Link as={NavLink} to="/cart">
-                Cart <Badge bg="dark" className={`ms-1 cart-badge ${cartPulse ? 'pulse' : ''}`}>{cartItemCount}</Badge>
-              </Nav.Link>
-              <Nav.Link as={NavLink} to="/payout">
-                Payout
-              </Nav.Link>
-              <Button
-                variant="outline-light"
-                className="pill-btn"
-                onClick={() => navigate('/#club')}
+          <Link to="/cart" className={`nav-cart nav-cart-standalone ${cartPulse ? 'pulse' : ''}`}>
+            <span className="cart-icon" aria-hidden="true">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 576 512"
+                width="18"
+                height="18"
               >
-                Join the Club
-              </Button>
-            </Nav>
-          </Navbar.Collapse>
+                <path d="M0 24C0 10.7 10.7 0 24 0H69.5c22 0 41.5 12.8 50.6 32h411c26.3 0 45.5 25 38.6 50.4l-41 152.3c-8.5 31.4-37 53.3-69.5 53.3H170.7l5.4 28.5c2.2 11.3 12.1 19.5 23.6 19.5H488c13.3 0 24 10.7 24 24s-10.7 24-24 24H199.7c-34.6 0-64.3-24.6-70.7-58.5L77.4 54.5c-.7-3.8-4-6.5-7.9-6.5H24C10.7 48 0 37.3 0 24zM128 464a48 48 0 1 1 96 0 48 48 0 1 1 -96 0zm336-48a48 48 0 1 1 0 96 48 48 0 1 1 0-96z"></path>
+              </svg>
+            </span>
+            Cart
+            <Badge bg="dark" className="ms-2 cart-badge">
+              {cartItemCount}
+            </Badge>
+          </Link>
         </Container>
       </Navbar>
 
