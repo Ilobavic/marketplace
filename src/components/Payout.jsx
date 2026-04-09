@@ -1,16 +1,66 @@
-﻿import React, { useState } from 'react';
-import { Button, Form } from 'react-bootstrap';
+import React, { useMemo, useState } from 'react';
+import { Alert, Button, Form, Spinner } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 
-export default function Payout({ total, onBack }) {
+const apiBase = import.meta.env.VITE_API_BASE_URL ?? '';
+
+export default function Payout({ cartItems, onBack }) {
+  const [email, setEmail] = useState('');
   const [status, setStatus] = useState('idle');
-  const [reference] = useState(() => `LM-${Math.floor(100000 + Math.random() * 900000)}`);
+  const [error, setError] = useState('');
+
+  const total = useMemo(
+    () => cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0),
+    [cartItems]
+  );
 
   const formattedTotal = total ? `NGN ${total.toLocaleString()}` : 'NGN 0';
 
-  const handleConfirm = () => {
-    setStatus('processing');
-    setTimeout(() => setStatus('confirmed'), 900);
+  const handleStripeCheckout = async () => {
+    setError('');
+    if (!cartItems.length) {
+      setError('Your cart is empty. Add something before paying.');
+      return;
+    }
+    setStatus('loading');
+    try {
+      const res = await fetch(`${apiBase}/api/checkout/create-session`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          items: cartItems.map((item) => ({ id: item.id, quantity: item.quantity })),
+          customer_email: email.trim() || null,
+        }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        throw new Error(data.detail || res.statusText || 'Checkout failed');
+      }
+      if (!data.url) {
+        throw new Error('No checkout URL returned from server');
+      }
+      window.location.assign(data.url);
+    } catch (e) {
+      setStatus('idle');
+      setError(e instanceof Error ? e.message : 'Something went wrong');
+    }
   };
+
+  if (!cartItems.length) {
+    return (
+      <div className="payout-card">
+        <button type="button" className="link-back" onClick={onBack}>
+          ← Back to cart
+        </button>
+        <p className="eyebrow">Checkout</p>
+        <h2>Your cart is empty</h2>
+        <p className="detail-desc">Add items to your cart before starting Stripe checkout.</p>
+        <Button as={Link} to="/" variant="dark" className="pill-btn">
+          Browse shop
+        </Button>
+      </div>
+    );
+  }
 
   return (
     <div className="payout-card">
@@ -20,9 +70,10 @@ export default function Payout({ total, onBack }) {
       <div className="payout-grid">
         <div>
           <p className="eyebrow">Checkout</p>
-          <h2>Confirm your payment</h2>
+          <h2>Pay with Stripe</h2>
           <p className="detail-desc">
-            Use the demo payout to simulate a successful payment. No real charges are made.
+            You will be redirected to Stripe’s secure checkout. Totals are confirmed on the server so prices
+            match our catalog.
           </p>
 
           <div className="payout-summary">
@@ -31,54 +82,61 @@ export default function Payout({ total, onBack }) {
               <strong>{formattedTotal}</strong>
             </div>
             <div>
-              <span>Reference</span>
-              <strong>{reference}</strong>
+              <span>Items</span>
+              <strong>{cartItems.reduce((n, i) => n + i.quantity, 0)}</strong>
             </div>
           </div>
 
           <Form className="payout-form">
             <Form.Group className="mb-3">
-              <Form.Label>Card number</Form.Label>
-              <Form.Control placeholder="4242 4242 4242 4242" />
-            </Form.Group>
-            <div className="payout-row">
-              <Form.Group>
-                <Form.Label>Expiry</Form.Label>
-                <Form.Control placeholder="MM/YY" />
-              </Form.Group>
-              <Form.Group>
-                <Form.Label>CVC</Form.Label>
-                <Form.Control placeholder="123" />
-              </Form.Group>
-            </div>
-            <Form.Group className="mb-3">
-              <Form.Label>Email</Form.Label>
-              <Form.Control placeholder="hello@luxmarket.com" type="email" />
+              <Form.Label>Email (optional)</Form.Label>
+              <Form.Control
+                type="email"
+                placeholder="hello@luxmarket.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                autoComplete="email"
+              />
+              <Form.Text className="text-muted">Prefills your receipt on Stripe.</Form.Text>
             </Form.Group>
           </Form>
+          {error && (
+            <Alert variant="warning" className="mb-3">
+              {error}
+            </Alert>
+          )}
         </div>
 
         <div className="payout-panel">
-          <h4>Payment status</h4>
+          <h4>Secure payment</h4>
           <p className="status-text" aria-live="polite">
-            {status === 'idle' && 'Ready to confirm.'}
-            {status === 'processing' && 'Processing your payment...'}
-            {status === 'confirmed' && 'Payment confirmed. Receipt sent.'}
+            {status === 'loading'
+              ? 'Opening Stripe checkout…'
+              : 'Ready — we use Stripe Checkout in your browser.'}
           </p>
-          {status === 'processing' && <div className="uiverse-loader" aria-hidden="true" />}
-          <div className={`status-badge ${status}`}>
-            {status === 'confirmed' ? 'Confirmed' : status === 'processing' ? 'Processing' : 'Awaiting confirmation'}
-          </div>
+          {status === 'loading' && (
+            <div className="d-flex justify-content-center my-3" aria-hidden="true">
+              <Spinner animation="border" role="status" size="sm">
+                <span className="visually-hidden">Loading</span>
+              </Spinner>
+            </div>
+          )}
           <Button
             variant="dark"
             size="lg"
             className="w-100 pill-btn"
-            onClick={handleConfirm}
-            disabled={status === 'processing' || status === 'confirmed'}
+            onClick={handleStripeCheckout}
+            disabled={status === 'loading'}
           >
-            {status === 'confirmed' ? 'Payment complete' : 'Confirm payment'}
+            {status === 'loading' ? 'Redirecting…' : 'Continue to Stripe'}
           </Button>
-          <small className="status-note">Demo only — no real transaction.</small>
+          <small className="status-note d-block mt-2">
+            Test cards: see{' '}
+            <a href="https://stripe.com/docs/testing" target="_blank" rel="noreferrer">
+              Stripe testing docs
+            </a>
+            .
+          </small>
         </div>
       </div>
     </div>

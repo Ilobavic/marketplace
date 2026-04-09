@@ -4,6 +4,7 @@ import ProductList from './components/ProductList';
 import Cart from './components/Cart';
 import ProductDetail from './components/ProductDetail';
 import Payout from './components/Payout';
+import { PayoutSuccess, PayoutCancel } from './components/CheckoutReturn';
 import { Container, Navbar, Nav, Badge, Button, Alert, Form } from 'react-bootstrap';
 import { Routes, Route, NavLink, Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import './App.css';
@@ -237,8 +238,12 @@ function App() {
     const path = location.pathname;
     if (path.startsWith('/cart')) {
       document.title = 'Your Cart � LuxMarket';
+    } else if (path.startsWith('/payout/success')) {
+      document.title = 'Thank you – LuxMarket';
+    } else if (path.startsWith('/payout/cancel')) {
+      document.title = 'Checkout canceled – LuxMarket';
     } else if (path.startsWith('/payout')) {
-      document.title = 'Checkout � LuxMarket';
+      document.title = 'Checkout – LuxMarket';
     } else if (path.startsWith('/product')) {
       document.title = 'Product details � LuxMarket';
     } else {
@@ -311,7 +316,6 @@ function App() {
   };
 
   const cartItemCount = cart.reduce((sum, item) => sum + item.quantity, 0);
-  const cartTotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   const handleClubSubmit = (event) => {
     event.preventDefault();
@@ -430,7 +434,23 @@ function App() {
             path="/payout"
             element={
               <Container className="payout-shell">
-                <Payout total={cartTotal} onBack={() => navigate('/cart')} />
+                <Payout cartItems={cart} onBack={() => navigate('/cart')} />
+              </Container>
+            }
+          />
+          <Route
+            path="/payout/success"
+            element={
+              <Container className="payout-shell">
+                <PayoutSuccess />
+              </Container>
+            }
+          />
+          <Route
+            path="/payout/cancel"
+            element={
+              <Container className="payout-shell">
+                <PayoutCancel />
               </Container>
             }
           />
