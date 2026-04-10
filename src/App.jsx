@@ -156,13 +156,13 @@ function Home() {
           <div className="proof-grid">
             <div className="proof-card">
               <p className="eyebrow">Trusted by stylists</p>
-              <h3>�The fastest way to build a luxe wardrobe.�</h3>
-              <span>� Kemi Odumosu, Fashion Editor</span>
+              <h3>"The fastest way to build a luxe wardrobe."</h3>
+              <span>- Kemi Odumosu, Fashion Editor</span>
             </div>
             <div className="proof-card">
               <p className="eyebrow">Press highlight</p>
-              <h3>�A sleek marketplace with concierge-level service.�</h3>
-              <span>� Style Atlas Weekly</span>
+              <h3>"A sleek marketplace with concierge-level service."</h3>
+              <span>- Style Atlas Weekly</span>
             </div>
             <div className="proof-card">
               <p className="eyebrow">Community rating</p>
@@ -219,13 +219,23 @@ function Home() {
 }
 
 function App() {
-  const [cart, setCart] = useState([]);
+  const [cart, setCart] = useState(() => {
+    try {
+      const raw = window.localStorage.getItem('luxmarket_cart');
+      if (!raw) return [];
+      const parsed = JSON.parse(raw);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return [];
+    }
+  });
   const [clubEmail, setClubEmail] = useState('');
   const [clubStatus, setClubStatus] = useState('idle');
   const [isNavExpanded, setIsNavExpanded] = useState(false);
   const [cartPulse, setCartPulse] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const navRef = useRef(null);
+  const hasHydratedRef = useRef(false);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -235,19 +245,32 @@ function App() {
   }, []);
 
   useEffect(() => {
+    hasHydratedRef.current = true;
+  }, []);
+
+  useEffect(() => {
+    if (!hasHydratedRef.current) return;
+    try {
+      window.localStorage.setItem('luxmarket_cart', JSON.stringify(cart));
+    } catch {
+      // Ignore storage errors and continue without persistence.
+    }
+  }, [cart]);
+
+  useEffect(() => {
     const path = location.pathname;
     if (path.startsWith('/cart')) {
-      document.title = 'Your Cart � LuxMarket';
+      document.title = 'Your Cart - LuxMarket';
     } else if (path.startsWith('/payout/success')) {
-      document.title = 'Thank you – LuxMarket';
+      document.title = 'Thank you - LuxMarket';
     } else if (path.startsWith('/payout/cancel')) {
-      document.title = 'Checkout canceled – LuxMarket';
+      document.title = 'Checkout canceled - LuxMarket';
     } else if (path.startsWith('/payout')) {
-      document.title = 'Checkout – LuxMarket';
+      document.title = 'Checkout - LuxMarket';
     } else if (path.startsWith('/product')) {
-      document.title = 'Product details � LuxMarket';
+      document.title = 'Product details - LuxMarket';
     } else {
-      document.title = 'LuxMarket � Modern fashion marketplace';
+      document.title = 'LuxMarket - Modern fashion marketplace';
     }
   }, [location.pathname]);
 

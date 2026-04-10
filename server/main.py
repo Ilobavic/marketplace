@@ -1,5 +1,5 @@
 """
-LuxMarket checkout API — Stripe Checkout Sessions + webhook handler.
+LuxMarket checkout API - Stripe Checkout Sessions + webhook handler.
 
 Run (from repo root):
   cd server
@@ -21,9 +21,9 @@ from pathlib import Path
 
 import stripe
 from dotenv import load_dotenv
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, HTTPException, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field, field_validator, EmailStr
 
 load_dotenv(Path(__file__).resolve().parent / ".env")
 
@@ -63,11 +63,11 @@ class CartLineIn(BaseModel):
 
 class CreateCheckoutBody(BaseModel):
     items: list[CartLineIn]
-    customer_email: str | None = None
+    customer_email: EmailStr | None = None
 
     @field_validator("customer_email")
     @classmethod
-    def strip_email(cls, v: str | None) -> str | None:
+    def strip_email(cls, v: EmailStr | None) -> EmailStr | None:
         if v is None:
             return None
         s = v.strip()
@@ -83,10 +83,22 @@ app.add_middleware(
         "http://127.0.0.1:5173",
         "http://localhost:5173",
     ],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_credentials=False,
+    allow_methods=["GET", "POST"],
+    allow_headers=["Content-Type", "Stripe-Signature"],
 )
+
+
+@app.middleware("http")
+async def add_security_headers(request: Request, call_next):
+    response: Response = await call_next(request)
+    response.headers.setdefault("X-Content-Type-Options", "nosniff")
+    response.headers.setdefault("Referrer-Policy", "strict-origin-when-cross-origin")
+    response.headers.setdefault("X-Frame-Options", "DENY")
+    return response
+
+
+_PROCESSED_WEBHOOK_EVENTS: set[str] = set()
 
 
 @app.get("/api/health")
@@ -161,6 +173,12 @@ async def stripe_webhook(request: Request):
         if type(e).__name__ == "SignatureVerificationError":
             raise HTTPException(status_code=400, detail="Invalid signature") from e
         raise
+
+    event_id = event.get("id")
+    if event_id:
+        if event_id in _PROCESSED_WEBHOOK_EVENTS:
+            return {"received": True, "duplicate": True}
+        _PROCESSED_WEBHOOK_EVENTS.add(event_id)
 
     if event["type"] == "checkout.session.completed":
         session = event["data"]["object"]

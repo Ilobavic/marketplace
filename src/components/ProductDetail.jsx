@@ -13,7 +13,7 @@ export default function ProductDetail({ product, onBack, addToCart, onBuyNow }) 
   return (
     <div className="detail-card">
       <button type="button" className="link-back" onClick={onBack}>
-        ← Back to shop
+        &larr; Back to shop
       </button>
       <div className="detail-grid">
         <div className="detail-media">
@@ -41,6 +41,7 @@ export default function ProductDetail({ product, onBack, addToCart, onBuyNow }) 
                     type="button"
                     className={`chip ${selectedSize === size ? 'active' : ''}`}
                     onClick={() => setSelectedSize(size)}
+                    aria-pressed={selectedSize === size}
                   >
                     {size}
                   </button>
@@ -56,6 +57,7 @@ export default function ProductDetail({ product, onBack, addToCart, onBuyNow }) 
                     type="button"
                     className={`chip ${selectedColor === color ? 'active' : ''}`}
                     onClick={() => setSelectedColor(color)}
+                    aria-pressed={selectedColor === color}
                   >
                     {color}
                   </button>

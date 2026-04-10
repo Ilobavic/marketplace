@@ -99,6 +99,7 @@ export default function ProductList({ products, addToCart, onView }) {
             type="button"
             className={`category-pill ${category === item.label ? 'active' : ''}`}
             onClick={() => setCategory(item.label)}
+            aria-pressed={category === item.label}
           >
             {item.label}
           </button>

@@ -32,8 +32,7 @@ export function PayoutCancel() {
       <p className="eyebrow">Checkout</p>
       <h2>Payment canceled</h2>
       <p className="detail-desc">
-        No charge was made. Your cart is still saved in this browser session — you can try again whenever you
-        are ready.
+        No charge was made. Your cart is still saved on this device - you can try again whenever you are ready.
       </p>
       <div className="d-flex flex-wrap gap-2">
         <Button as={Link} to="/cart" variant="dark" className="pill-btn">

@@ -2,15 +2,15 @@
 
 A modern fashion marketplace designed to deliver a smooth, immersive, and user-friendly shopping experience across both desktop and mobile devices.
 
-## 🧱 Technologies Used
+## Technologies Used
 
-- **HTML** – For clear and semantic page structure
-- **CSS** – For custom styling, animations, and visual consistency
-- **JavaScript** – For interactivity and dynamic behavior
-- **React** – For building reusable UI components and managing application state
-- **React Bootstrap** – For responsive layouts, grids, and accessible UI components
+- **HTML** - For clear and semantic page structure
+- **CSS** - For custom styling, animations, and visual consistency
+- **JavaScript** - For interactivity and dynamic behavior
+- **React** - For building reusable UI components and managing application state
+- **React Bootstrap** - For responsive layouts, grids, and accessible UI components
 
-## 🎨 UI Design Approach
+## UI Design Approach
 
 The user interface focuses on clean aesthetics and fashion-forward visuals, ensuring the platform feels premium and modern.
 
@@ -19,16 +19,16 @@ The user interface focuses on clean aesthetics and fashion-forward visuals, ensu
 - **Consistent color palette** aligned with fashion branding
 - **Smooth transitions and hover effects** for better visual feedback
 
-## 🧭 UX Design & User Flow
+## UX Design and User Flow
 
 The user experience is designed to be intuitive and friction-free, allowing users to browse and shop effortlessly.
 
 - **Simple navigation** with clear categories and filters
 - **Fast product discovery** and easy scrolling
 - **Clear call-to-action buttons** (Add to Cart, View Details, Checkout)
-- **Logical flow** from product browsing → selection → checkout
+- **Logical flow** from product browsing -> selection -> checkout
 
-## 📱 Responsive & Mobile-First Experience
+## Responsive and Mobile-First Experience
 
 The marketplace is fully responsive, adapting seamlessly to different screen sizes.
 
@@ -37,15 +37,24 @@ The marketplace is fully responsive, adapting seamlessly to different screen siz
 - **Optimized images** and components for smaller screens
 - **Desktop version enhanced** with wider layouts and richer visuals
 
-## 🌐 Immersive Shopping Experience
+## Immersive Shopping Experience
 
-By combining React’s component-based architecture with Bootstrap’s responsive system, the platform provides:
+By combining React's component-based architecture with Bootstrap's responsive system, the platform provides:
 
 - **Smooth navigation** without page reloads
 - **Fast interactions** and real-time UI updates
 - **A shopping experience** that feels app-like on mobile and powerful on desktop
 
-## 🔮 Future Enhancements (Optional)
+## Production Hardening Checklist
+
+- Serve the API over HTTPS in production.
+- Set `STRIPE_SECRET_KEY` and `STRIPE_WEBHOOK_SECRET` in a secure secret manager.
+- Restrict CORS origins to your exact production domain.
+- Add rate limiting on `/api/checkout/create-session` and `/api/webhooks/stripe`.
+- Persist webhook event IDs to prevent duplicate processing across restarts.
+- Run dependency audits regularly (npm and pip).
+
+## Future Enhancements (Optional)
 
 - Product search and advanced filtering
 - User accounts and wishlists
@@ -54,17 +63,18 @@ By combining React’s component-based architecture with Bootstrap’s responsiv
 
 ---
 
-*Logo designed with [Canva](https://www.canva.com/)*
+Logo designed with [Canva](https://www.canva.com/)
 
-## images missing 
-air max 90
-travis scoot jordan 1 low 
-crocs pollex clog
-solomon xt 6
-dr martens 1460
-birkens boston nike kyrie infinty off white caravaggio tee
-carhartt work jacket 
-new era ny cap
-seiko 5 sports 
-hermes tie 
-travel duffle bag 
+## Images missing
+
+- air max 90
+- travis scoot jordan 1 low
+- crocs pollex clog
+- solomon xt 6
+- dr martens 1460
+- birkens boston nike kyrie infinty off white caravaggio tee
+- carhartt work jacket
+- new era ny cap
+- seiko 5 sports
+- hermes tie
+- travel duffle bag

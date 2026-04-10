@@ -50,7 +50,7 @@ export default function Payout({ cartItems, onBack }) {
     return (
       <div className="payout-card">
         <button type="button" className="link-back" onClick={onBack}>
-          ← Back to cart
+          &larr; Back to cart
         </button>
         <p className="eyebrow">Checkout</p>
         <h2>Your cart is empty</h2>
@@ -65,14 +65,14 @@ export default function Payout({ cartItems, onBack }) {
   return (
     <div className="payout-card">
       <button type="button" className="link-back" onClick={onBack}>
-        ← Back to cart
+        &larr; Back to cart
       </button>
       <div className="payout-grid">
         <div>
           <p className="eyebrow">Checkout</p>
           <h2>Pay with Stripe</h2>
           <p className="detail-desc">
-            You will be redirected to Stripe’s secure checkout. Totals are confirmed on the server so prices
+            You will be redirected to Stripe's secure checkout. Totals are confirmed on the server so prices
             match our catalog.
           </p>
 
@@ -111,8 +111,8 @@ export default function Payout({ cartItems, onBack }) {
           <h4>Secure payment</h4>
           <p className="status-text" aria-live="polite">
             {status === 'loading'
-              ? 'Opening Stripe checkout…'
-              : 'Ready — we use Stripe Checkout in your browser.'}
+              ? 'Opening Stripe checkout...'
+              : 'Ready - we use Stripe Checkout in your browser.'}
           </p>
           {status === 'loading' && (
             <div className="d-flex justify-content-center my-3" aria-hidden="true">
@@ -128,7 +128,7 @@ export default function Payout({ cartItems, onBack }) {
             onClick={handleStripeCheckout}
             disabled={status === 'loading'}
           >
-            {status === 'loading' ? 'Redirecting…' : 'Continue to Stripe'}
+            {status === 'loading' ? 'Redirecting...' : 'Continue to Stripe'}
           </Button>
           <small className="status-note d-block mt-2">
             Test cards: see{' '}
