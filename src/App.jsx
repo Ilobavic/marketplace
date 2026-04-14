@@ -5,6 +5,7 @@ import Cart from './components/Cart';
 import ProductDetail from './components/ProductDetail';
 import Payout from './components/Payout';
 import { PayoutSuccess, PayoutCancel } from './components/CheckoutReturn';
+import WelcomeIntro from './components/WelcomeIntro';
 import { Container, Navbar, Badge, Button, Alert, Form } from 'react-bootstrap';
 import { Routes, Route, Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import './App.css';
@@ -219,6 +220,12 @@ function Home() {
 }
 
 function App() {
+  const [showIntro, setShowIntro] = useState(() => {
+    const introKey = 'luxmarket_intro_seen';
+    const hasSeenIntro = window.sessionStorage.getItem(introKey) === '1';
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    return !hasSeenIntro && !prefersReducedMotion;
+  });
   const [cart, setCart] = useState(() => {
     try {
       const raw = window.localStorage.getItem('luxmarket_cart');
@@ -241,6 +248,12 @@ function App() {
   useEffect(() => {
     hasHydratedRef.current = true;
   }, []);
+
+  useEffect(() => {
+    if (!showIntro) {
+      window.sessionStorage.setItem('luxmarket_intro_seen', '1');
+    }
+  }, [showIntro]);
 
   useEffect(() => {
     if (!hasHydratedRef.current) return;
@@ -348,8 +361,14 @@ function App() {
     setClubEmail('');
   };
 
+  const handleIntroDone = () => {
+    window.sessionStorage.setItem('luxmarket_intro_seen', '1');
+    setShowIntro(false);
+  };
+
   return (
     <div className="App" onClick={() => isNavExpanded && setIsNavExpanded(false)}>
+      {showIntro && <WelcomeIntro onDone={handleIntroDone} />}
       <a className="skip-link" href="#main">Skip to content</a>
       <Navbar
         expand="lg"
