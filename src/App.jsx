@@ -5,8 +5,8 @@ import Cart from './components/Cart';
 import ProductDetail from './components/ProductDetail';
 import Payout from './components/Payout';
 import { PayoutSuccess, PayoutCancel } from './components/CheckoutReturn';
-import { Container, Navbar, Nav, Badge, Button, Alert, Form } from 'react-bootstrap';
-import { Routes, Route, NavLink, Link, useLocation, useNavigate, useParams } from 'react-router-dom';
+import { Container, Navbar, Badge, Button, Alert, Form } from 'react-bootstrap';
+import { Routes, Route, Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import './App.css';
 
 const lookbookItems = [
@@ -233,16 +233,10 @@ function App() {
   const [clubStatus, setClubStatus] = useState('idle');
   const [isNavExpanded, setIsNavExpanded] = useState(false);
   const [cartPulse, setCartPulse] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
   const navRef = useRef(null);
   const hasHydratedRef = useRef(false);
   const location = useLocation();
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const timer = setTimeout(() => setIsLoading(false), 1400);
-    return () => clearTimeout(timer);
-  }, []);
 
   useEffect(() => {
     hasHydratedRef.current = true;
@@ -356,22 +350,6 @@ function App() {
 
   return (
     <div className="App" onClick={() => isNavExpanded && setIsNavExpanded(false)}>
-      {isLoading && (
-        <div className="loader-overlay" aria-live="polite" aria-busy="true">
-          <div className="loader" role="status">
-            <div className="text"><span>LUXMARKET</span></div>
-            <div className="text"><span>LUXMARKET</span></div>
-            <div className="text"><span>LUXMARKET</span></div>
-            <div className="text"><span>LUXMARKET</span></div>
-            <div className="text"><span>LUXMARKET</span></div>
-            <div className="text"><span>LUXMARKET</span></div>
-            <div className="text"><span>LUXMARKET</span></div>
-            <div className="text"><span>LUXMARKET</span></div>
-            <div className="text"><span>LUXMARKET</span></div>
-            <div className="line" />
-          </div>
-        </div>
-      )}
       <a className="skip-link" href="#main">Skip to content</a>
       <Navbar
         expand="lg"

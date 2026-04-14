@@ -18,6 +18,9 @@ class ApiSmokeTests(unittest.TestCase):
         self.client = TestClient(main.app)
         main.init_webhook_db()
 
+    def tearDown(self):
+        self.client.close()
+
     def test_health_endpoint(self):
         response = self.client.get("/api/health")
         self.assertEqual(response.status_code, 200)
@@ -52,12 +55,23 @@ class ApiSmokeTests(unittest.TestCase):
         headers = {"stripe-signature": "mocked-signature"}
 
         with patch.object(main.stripe.Webhook, "construct_event", return_value=event):
-            first = self.client.post("/api/webhooks/stripe", data=b"{}", headers=headers)
-            second = self.client.post("/api/webhooks/stripe", data=b"{}", headers=headers)
+            first = self.client.post("/api/webhooks/stripe", content=b"{}", headers=headers)
+            second = self.client.post("/api/webhooks/stripe", content=b"{}", headers=headers)
 
         self.assertEqual(first.status_code, 200)
         self.assertEqual(second.status_code, 200)
         self.assertEqual(second.json().get("duplicate"), True)
+
+    def test_checkout_session_status_paid(self):
+        fake_session = {"id": "cs_test_status", "payment_status": "paid"}
+        with patch.object(main.stripe.checkout.Session, "retrieve", return_value=fake_session):
+            main.stripe.api_key = "sk_test_mock"
+            response = self.client.get("/api/checkout/session-status", params={"session_id": "cs_test_status"})
+
+        self.assertEqual(response.status_code, 200)
+        body = response.json()
+        self.assertEqual(body["session_id"], "cs_test_status")
+        self.assertEqual(body["status"], "paid")
 
 
 if __name__ == "__main__":

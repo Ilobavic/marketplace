@@ -23,8 +23,7 @@ export default function Payout({ cartItems, onBack }) {
 
   const formattedTotal = total ? `NGN ${total.toLocaleString()}` : 'NGN 0';
   const apiBase = resolveApiBase();
-  const isProdWithoutApiBase =
-    import.meta.env.PROD && !apiBase && !window.location.hostname.includes('localhost');
+  const isProdWithoutApiBase = import.meta.env.PROD && !apiBase;
 
   const handleStripeCheckout = async () => {
     setError('');

@@ -20,6 +20,7 @@ import logging
 import os
 import sqlite3
 import time
+from contextlib import closing
 from pathlib import Path
 
 import stripe
@@ -109,7 +110,7 @@ async def add_security_headers(request: Request, call_next):
 
 def init_webhook_db() -> None:
     WEBHOOK_DB_PATH.parent.mkdir(parents=True, exist_ok=True)
-    with sqlite3.connect(WEBHOOK_DB_PATH) as con:
+    with closing(sqlite3.connect(WEBHOOK_DB_PATH)) as con:
         con.execute(
             """
             CREATE TABLE IF NOT EXISTS processed_events (
@@ -124,7 +125,7 @@ def init_webhook_db() -> None:
 
 def cleanup_old_webhook_events(now_ts: int) -> None:
     cutoff = now_ts - WEBHOOK_EVENT_TTL_SECONDS
-    with sqlite3.connect(WEBHOOK_DB_PATH) as con:
+    with closing(sqlite3.connect(WEBHOOK_DB_PATH)) as con:
         con.execute("DELETE FROM processed_events WHERE received_at < ?", (cutoff,))
         con.commit()
 
@@ -133,7 +134,7 @@ def mark_webhook_event_seen(event_id: str, now_ts: int) -> bool:
     """
     Returns True when event is newly seen, False when duplicate.
     """
-    with sqlite3.connect(WEBHOOK_DB_PATH) as con:
+    with closing(sqlite3.connect(WEBHOOK_DB_PATH)) as con:
         cur = con.execute(
             "INSERT OR IGNORE INTO processed_events(id, received_at) VALUES(?, ?)",
             (event_id, now_ts),
@@ -195,6 +196,32 @@ def create_checkout_session(body: CreateCheckoutBody):
         raise
 
     return {"url": session.url, "id": session.id}
+
+
+@app.get("/api/checkout/session-status")
+def checkout_session_status(session_id: str):
+    if not stripe.api_key:
+        raise HTTPException(
+            status_code=503,
+            detail="Stripe is not configured. Set STRIPE_SECRET_KEY in server/.env",
+        )
+    if not session_id.strip():
+        raise HTTPException(status_code=400, detail="session_id is required")
+
+    try:
+        session = stripe.checkout.Session.retrieve(session_id)
+    except Exception as e:
+        if _is_stripe_exception(e):
+            msg = getattr(e, "user_message", None) or str(e)
+            raise HTTPException(status_code=502, detail=msg) from e
+        raise
+
+    status = "paid" if session.get("payment_status") == "paid" else "unpaid"
+    return {
+        "session_id": session.get("id"),
+        "status": status,
+        "payment_status": session.get("payment_status"),
+    }
 
 
 @app.post("/api/webhooks/stripe")

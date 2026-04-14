@@ -6,7 +6,6 @@ export default function ProductList({ products, addToCart, onView }) {
   const [category, setCategory] = useState('All');
   const [sort, setSort] = useState('featured');
   const [priceRange, setPriceRange] = useState('all');
-  const [isLoading] = useState(false);
 
   const categories = [
     { label: 'All' },
@@ -107,17 +106,7 @@ export default function ProductList({ products, addToCart, onView }) {
         <Badge bg="dark" className="ms-auto">{filteredProducts.length} items</Badge>
       </div>
 
-      {isLoading ? (
-        <div className="loading-grid">
-          {Array.from({ length: 8 }).map((_, index) => (
-            <div className="loading-card" key={`loading-${index}`}>
-              <div className="loading-media" />
-              <div className="loading-line" />
-              <div className="loading-line short" />
-            </div>
-          ))}
-        </div>
-      ) : filteredProducts.length === 0 ? (
+      {filteredProducts.length === 0 ? (
         <div className="empty-state">
           <h4>No items found.</h4>
           <p>Try another keyword, category, or price range.</p>
@@ -135,7 +124,7 @@ export default function ProductList({ products, addToCart, onView }) {
           </Button>
         </div>
       ) : (
-        <Row xs={1} md={2} lg={3} xl={4} className="g-4">
+        <Row xs={1} md={2} lg={3} className="g-4">
           {filteredProducts.map((product) => (
             <Col key={product.id}>
               <Card className="h-100 border-0 product-card-hover lux-card">

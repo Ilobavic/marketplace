@@ -2,6 +2,16 @@
 
 LuxMarket is a fashion marketplace demo with a React frontend and a Python FastAPI backend that creates Stripe Checkout sessions.
 
+## UI System
+
+- Primary: `#111111`
+- Secondary accent: `#C9A227`
+- Neutral background/surfaces: `#F7F7F5`, `#FFFFFF`
+- Border/text neutrals: `#E5E5E0`, `#2A2A2A`
+- Spacing scale: `8/16/24/32/48/64`
+
+Layout follows a commerce-first structure: sticky top nav, 60/40 hero split, trust strip, 3/2/1 product grid, step-like checkout, and compact 3-column footer.
+
 ## Stack
 
 - Frontend: React, Vite, React Bootstrap
@@ -83,8 +93,9 @@ VITE_API_BASE_URL=https://your-api-domain.com
 
 - Frontend opens at `http://localhost:5173`
 - API health returns OK: `http://127.0.0.1:8000/api/health`
+- Checkout verification endpoint works: `http://127.0.0.1:8000/api/checkout/session-status?session_id=...`
 - Checkout button redirects to Stripe test checkout
-- Success URL returns to `/payout/success?session_id=...`
+- Success URL returns to `/payout/success?session_id=...` and UI verifies payment status before confirming success.
 
 ## Useful Scripts
 
