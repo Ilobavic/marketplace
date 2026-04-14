@@ -16,7 +16,10 @@ Stripe CLI for local webhooks:
 from __future__ import annotations
 
 import json
+import logging
 import os
+import sqlite3
+import time
 from pathlib import Path
 
 import stripe
@@ -32,6 +35,12 @@ WEBHOOK_SECRET = os.environ.get("STRIPE_WEBHOOK_SECRET", "")
 FRONTEND_URL = os.environ.get("FRONTEND_URL", "http://localhost:5173").rstrip("/")
 
 CATALOG_PATH = Path(__file__).resolve().parent / "catalog.json"
+WEBHOOK_DB_PATH = Path(
+    os.environ.get("WEBHOOK_EVENT_DB", Path(__file__).resolve().parent / "webhook_events.db")
+)
+WEBHOOK_EVENT_TTL_SECONDS = int(os.environ.get("WEBHOOK_EVENT_TTL_SECONDS", str(30 * 24 * 60 * 60)))
+logger = logging.getLogger("luxmarket.api")
+logging.basicConfig(level=logging.INFO)
 
 
 def load_catalog() -> dict[int, dict]:
@@ -98,7 +107,42 @@ async def add_security_headers(request: Request, call_next):
     return response
 
 
-_PROCESSED_WEBHOOK_EVENTS: set[str] = set()
+def init_webhook_db() -> None:
+    WEBHOOK_DB_PATH.parent.mkdir(parents=True, exist_ok=True)
+    with sqlite3.connect(WEBHOOK_DB_PATH) as con:
+        con.execute(
+            """
+            CREATE TABLE IF NOT EXISTS processed_events (
+                id TEXT PRIMARY KEY,
+                received_at INTEGER NOT NULL
+            )
+            """
+        )
+        con.execute("CREATE INDEX IF NOT EXISTS idx_processed_events_received_at ON processed_events(received_at)")
+        con.commit()
+
+
+def cleanup_old_webhook_events(now_ts: int) -> None:
+    cutoff = now_ts - WEBHOOK_EVENT_TTL_SECONDS
+    with sqlite3.connect(WEBHOOK_DB_PATH) as con:
+        con.execute("DELETE FROM processed_events WHERE received_at < ?", (cutoff,))
+        con.commit()
+
+
+def mark_webhook_event_seen(event_id: str, now_ts: int) -> bool:
+    """
+    Returns True when event is newly seen, False when duplicate.
+    """
+    with sqlite3.connect(WEBHOOK_DB_PATH) as con:
+        cur = con.execute(
+            "INSERT OR IGNORE INTO processed_events(id, received_at) VALUES(?, ?)",
+            (event_id, now_ts),
+        )
+        con.commit()
+        return cur.rowcount == 1
+
+
+init_webhook_db()
 
 
 @app.get("/api/health")
@@ -175,14 +219,19 @@ async def stripe_webhook(request: Request):
         raise
 
     event_id = event.get("id")
+    now_ts = int(time.time())
     if event_id:
-        if event_id in _PROCESSED_WEBHOOK_EVENTS:
+        if not mark_webhook_event_seen(event_id, now_ts):
             return {"received": True, "duplicate": True}
-        _PROCESSED_WEBHOOK_EVENTS.add(event_id)
+        cleanup_old_webhook_events(now_ts)
 
     if event["type"] == "checkout.session.completed":
         session = event["data"]["object"]
         # Extend: mark order paid, send email, etc.
-        print("checkout.session.completed", session.get("id"), session.get("payment_status"))
+        logger.info(
+            "checkout.session.completed id=%s payment_status=%s",
+            session.get("id"),
+            session.get("payment_status"),
+        )
 
     return {"received": True}

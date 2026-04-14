@@ -2,7 +2,14 @@ import React, { useMemo, useState } from 'react';
 import { Alert, Button, Form, Spinner } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 
-const apiBase = import.meta.env.VITE_API_BASE_URL ?? '';
+const configuredApiBase = import.meta.env.VITE_API_BASE_URL?.trim() ?? '';
+
+function resolveApiBase() {
+  if (configuredApiBase) {
+    return configuredApiBase.replace(/\/$/, '');
+  }
+  return '';
+}
 
 export default function Payout({ cartItems, onBack }) {
   const [email, setEmail] = useState('');
@@ -15,6 +22,9 @@ export default function Payout({ cartItems, onBack }) {
   );
 
   const formattedTotal = total ? `NGN ${total.toLocaleString()}` : 'NGN 0';
+  const apiBase = resolveApiBase();
+  const isProdWithoutApiBase =
+    import.meta.env.PROD && !apiBase && !window.location.hostname.includes('localhost');
 
   const handleStripeCheckout = async () => {
     setError('');
@@ -24,6 +34,11 @@ export default function Payout({ cartItems, onBack }) {
     }
     setStatus('loading');
     try {
+      if (isProdWithoutApiBase) {
+        throw new Error(
+          'VITE_API_BASE_URL is not configured for production. Set it to your backend origin.'
+        );
+      }
       const res = await fetch(`${apiBase}/api/checkout/create-session`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

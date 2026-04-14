@@ -1,80 +1,102 @@
-# Modern Fashion Marketplace
+# LuxMarket (React + FastAPI + Stripe)
 
-A modern fashion marketplace designed to deliver a smooth, immersive, and user-friendly shopping experience across both desktop and mobile devices.
+LuxMarket is a fashion marketplace demo with a React frontend and a Python FastAPI backend that creates Stripe Checkout sessions.
 
-## Technologies Used
+## Stack
 
-- **HTML** - For clear and semantic page structure
-- **CSS** - For custom styling, animations, and visual consistency
-- **JavaScript** - For interactivity and dynamic behavior
-- **React** - For building reusable UI components and managing application state
-- **React Bootstrap** - For responsive layouts, grids, and accessible UI components
+- Frontend: React, Vite, React Bootstrap
+- Backend: FastAPI, Stripe Python SDK
+- Payments: Stripe Checkout + webhook callback
 
-## UI Design Approach
+## Prerequisites
 
-The user interface focuses on clean aesthetics and fashion-forward visuals, ensuring the platform feels premium and modern.
+- Node.js 20+
+- Python 3.10+
+- Stripe account and test API keys
+- (Optional) Stripe CLI for local webhook testing
 
-- **Minimalist layout** with proper spacing and typography
-- **High-quality product cards** with images, price, and quick actions
-- **Consistent color palette** aligned with fashion branding
-- **Smooth transitions and hover effects** for better visual feedback
+## Local Setup
 
-## UX Design and User Flow
+### 1) Install frontend dependencies
 
-The user experience is designed to be intuitive and friction-free, allowing users to browse and shop effortlessly.
+```bash
+npm install
+```
 
-- **Simple navigation** with clear categories and filters
-- **Fast product discovery** and easy scrolling
-- **Clear call-to-action buttons** (Add to Cart, View Details, Checkout)
-- **Logical flow** from product browsing -> selection -> checkout
+### 2) Setup backend environment
 
-## Responsive and Mobile-First Experience
+```bash
+cd server
+python -m venv .venv
+.venv\Scripts\activate
+pip install -r requirements.txt
+copy .env.example .env
+```
 
-The marketplace is fully responsive, adapting seamlessly to different screen sizes.
+Update `server/.env`:
 
-- **Mobile-first layout** for smartphones and tablets
-- **Touch-friendly buttons** and cards
-- **Optimized images** and components for smaller screens
-- **Desktop version enhanced** with wider layouts and richer visuals
+- `STRIPE_SECRET_KEY=sk_test_...`
+- `STRIPE_WEBHOOK_SECRET=whsec_...` (required for webhook endpoint)
+- `FRONTEND_URL=http://localhost:5173`
 
-## Immersive Shopping Experience
+### 3) Start backend
 
-By combining React's component-based architecture with Bootstrap's responsive system, the platform provides:
+```bash
+cd server
+.venv\Scripts\activate
+uvicorn main:app --reload --port 8000
+```
 
-- **Smooth navigation** without page reloads
-- **Fast interactions** and real-time UI updates
-- **A shopping experience** that feels app-like on mobile and powerful on desktop
+### 4) Start frontend
 
-## Production Hardening Checklist
+```bash
+npm run dev
+```
 
-- Serve the API over HTTPS in production.
-- Set `STRIPE_SECRET_KEY` and `STRIPE_WEBHOOK_SECRET` in a secure secret manager.
-- Restrict CORS origins to your exact production domain.
-- Add rate limiting on `/api/checkout/create-session` and `/api/webhooks/stripe`.
-- Persist webhook event IDs to prevent duplicate processing across restarts.
-- Run dependency audits regularly (npm and pip).
+### 5) Optional: start Stripe webhook forwarding
 
-## Future Enhancements (Optional)
+```bash
+stripe listen --forward-to localhost:8000/api/webhooks/stripe
+```
 
-- Product search and advanced filtering
-- User accounts and wishlists
-- Cart persistence and checkout flow
-- Dark mode for fashion-focused aesthetics
+Copy the returned signing secret into `STRIPE_WEBHOOK_SECRET`.
 
----
+## Environment Variables
 
-Logo designed with [Canva](https://www.canva.com/)
+### Frontend (`.env.local`)
 
-## Images missing
+`VITE_API_BASE_URL` is optional in local dev because `vite.config.js` proxies `/api` to `http://127.0.0.1:8000`.
 
-- air max 90
-- travis scoot jordan 1 low
-- crocs pollex clog
-- solomon xt 6
-- dr martens 1460
-- birkens boston nike kyrie infinty off white caravaggio tee
-- carhartt work jacket
-- new era ny cap
-- seiko 5 sports
-- hermes tie
-- travel duffle bag
+Use it in production deployments where frontend and backend are on different origins:
+
+```bash
+VITE_API_BASE_URL=https://your-api-domain.com
+```
+
+### Backend (`server/.env`)
+
+- `STRIPE_SECRET_KEY`: Stripe secret API key
+- `STRIPE_WEBHOOK_SECRET`: Stripe webhook signing secret
+- `FRONTEND_URL`: checkout return domain (success/cancel URLs)
+
+## Sanity Checks
+
+- Frontend opens at `http://localhost:5173`
+- API health returns OK: `http://127.0.0.1:8000/api/health`
+- Checkout button redirects to Stripe test checkout
+- Success URL returns to `/payout/success?session_id=...`
+
+## Useful Scripts
+
+- `npm run dev` - start frontend dev server
+- `npm run lint` - run ESLint
+- `npm run test:smoke` - run frontend + backend smoke checks
+- `node scripts/dump-catalog.mjs` - regenerate `server/catalog.json` from `src/data.js`
+
+## Security Checklist
+
+- Serve API over HTTPS in production.
+- Store Stripe keys in a secret manager, never in source control.
+- Restrict CORS to your exact production frontend domain(s).
+- Add rate limiting to payment and webhook routes.
+- Keep webhook event IDs persisted to prevent duplicate processing.

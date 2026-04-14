@@ -1,10 +1,16 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Button } from 'react-bootstrap';
 import { Link, useSearchParams } from 'react-router-dom';
 
-export function PayoutSuccess() {
+export function PayoutSuccess({ onClearCart }) {
   const [params] = useSearchParams();
   const sessionId = params.get('session_id');
+
+  useEffect(() => {
+    if (sessionId) {
+      onClearCart?.();
+    }
+  }, [onClearCart, sessionId]);
 
   return (
     <div className="payout-card">

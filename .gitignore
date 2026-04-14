@@ -13,6 +13,12 @@ dist-ssr
 *.local
 server/.env
 server/.venv
+server/*.err
+server/webhook_events.db
+server/webhook_events.db-shm
+server/webhook_events.db-wal
+**/__pycache__/
+*.pyc
 
 # Editor directories and files
 .vscode/*

@@ -326,6 +326,10 @@ function App() {
     setCart((prevCart) => prevCart.filter((item) => item.id !== productId));
   };
 
+  const clearCart = () => {
+    setCart([]);
+  };
+
   const updateQuantity = (productId, newQuantity) => {
     if (newQuantity < 1) {
       removeFromCart(productId);
@@ -382,7 +386,7 @@ function App() {
           <Navbar.Brand as={Link} to="/" className="d-flex align-items-center gap-2">
             <img
               alt="LuxMarket logo"
-              src="/logo-canva.png"
+              src="/logo-canva.svg"
               width="34"
               height="34"
               className="brand-logo"
@@ -465,7 +469,7 @@ function App() {
             path="/payout/success"
             element={
               <Container className="payout-shell">
-                <PayoutSuccess />
+                <PayoutSuccess onClearCart={clearCart} />
               </Container>
             }
           />

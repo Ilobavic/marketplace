@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test:smoke": "node tests/checkout-flow-smoke.mjs && python -m unittest discover -s server/tests -p \"test_*.py\""
   },
   "dependencies": {
     "bootstrap": "^5.3.8",

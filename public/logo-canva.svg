@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" role="img" aria-label="LuxMarket logo">
+  <rect width="96" height="96" rx="20" fill="#111111" />
+  <path d="M26 24v48h42v-8H35V24z" fill="#ffffff" />
+  <path d="M42 24h9l10 24 9-24h9L64 58h-8z" fill="#d4af37" />
+</svg>
