@@ -1,16 +1,16 @@
 /* Theme */
 :root {
   --color-primary: #111111;
-  --color-secondary: #222222;
-  --color-bg: #eeeeee;
+  --color-secondary: #ff3d00;
+  --color-bg: #ffffff;
   --color-surface: #ffffff;
-  --color-border: #d0d0d0;
-  --color-text-muted: #2a2a2a;
-  --lux-cream: #eeeeee;
+  --color-border: #dcdcdc;
+  --color-text-muted: #777777;
+  --lux-cream: #ffffff;
   --lux-sand: #ffffff;
   --lux-ink: #111111;
   --lux-charcoal: #2a2a2a;
-  --lux-gold: #222222;
+  --lux-gold: #ff3d00;
   --lux-mist: #d0d0d0;
   --space-8: 8px;
   --space-16: 16px;
@@ -31,8 +31,8 @@
   background: var(--color-bg);
   color: var(--color-primary);
   background-image:
-    radial-gradient(1200px 600px at 100% -10%, rgba(255, 255, 255, 0.5), transparent 60%),
-    radial-gradient(900px 520px at -10% 10%, rgba(208, 208, 208, 0.32), transparent 60%);
+    radial-gradient(1200px 600px at 100% -10%, rgba(255, 255, 255, 0.75), transparent 60%),
+    radial-gradient(900px 520px at -10% 10%, rgba(245, 245, 245, 0.75), transparent 60%);
 }
 
 .skip-link {
@@ -161,8 +161,8 @@ select:focus-visible,
   align-items: center;
   justify-content: center;
   border-radius: 999px;
-  background: #d0d0d0 !important;
-  color: #111 !important;
+  background: var(--color-secondary) !important;
+  color: #fff !important;
   font-weight: 700;
   box-shadow: 0 6px 14px rgba(0, 0, 0, 0.25);
 }
@@ -224,14 +224,15 @@ select:focus-visible,
 }
 
 .btn-dark.pill-btn {
-  background: var(--color-primary) !important;
-  border-color: var(--color-primary) !important;
+  background: var(--color-secondary) !important;
+  border-color: var(--color-secondary) !important;
+  color: #fff !important;
 }
 
 .btn-dark.pill-btn:hover,
 .btn-dark.pill-btn:focus-visible {
-  background: #000 !important;
-  border-color: #000 !important;
+  background: #e53600 !important;
+  border-color: #e53600 !important;
 }
 
 .btn-outline-dark.pill-btn {
@@ -250,8 +251,8 @@ select:focus-visible,
 .hero {
   padding: var(--space-64) 0 var(--space-48);
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.9) 0%, rgba(238, 238, 238, 0.88) 100%),
-    radial-gradient(circle at 90% 10%, rgba(34, 34, 34, 0.12), transparent 45%);
+    linear-gradient(180deg, rgba(255, 255, 255, 0.95) 0%, rgba(245, 245, 245, 0.92) 100%),
+    radial-gradient(circle at 90% 10%, rgba(255, 61, 0, 0.08), transparent 45%);
   position: relative;
   overflow: hidden;
 }
@@ -335,7 +336,7 @@ select:focus-visible,
   inset: 0;
   border-radius: 32px;
   overflow: hidden;
-  background: linear-gradient(135deg, rgba(17, 17, 17, 0.2), rgba(208, 208, 208, 0.35));
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.22), rgba(255, 61, 0, 0.16));
   box-shadow: var(--lux-shadow);
 }
 
@@ -556,7 +557,7 @@ select:focus-visible,
   height: 40px;
   border-radius: 12px;
   border: none;
-  background: linear-gradient(180deg, #2f2f2f 0%, #111111 100%);
+  background: linear-gradient(180deg, #ff4b14 0%, #ff3d00 100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -635,9 +636,9 @@ select:focus-visible,
 }
 
 .category-pill.active {
-  background: var(--color-secondary);
+  background: var(--color-primary);
   color: #fff;
-  border-color: var(--color-secondary);
+  border-color: var(--color-primary);
 }
 
 .category-pill::after {
@@ -650,7 +651,7 @@ select:focus-visible,
 
 .category-pill:hover {
   transform: translateY(-2px);
-  border-color: var(--color-secondary);
+  border-color: var(--color-primary);
 }
 
 .category-pill:hover::after,
@@ -800,7 +801,7 @@ select:focus-visible,
 /* Club */
 .club {
   padding: var(--space-48) 0;
-  background: linear-gradient(180deg, #f8f8f8 0%, #eeeeee 100%);
+  background: linear-gradient(180deg, #ffffff 0%, #f5f5f5 100%);
 }
 
 .club-inner {
