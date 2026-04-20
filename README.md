@@ -102,7 +102,8 @@ VITE_API_BASE_URL=https://your-api-domain.com
 - `npm run dev` - start frontend dev server
 - `npm run lint` - run ESLint
 - `npm run test:smoke` - run frontend + backend smoke checks
-- `node scripts/dump-catalog.mjs` - regenerate `server/catalog.json` from `src/data.js`
+- `node tests/smoke/checkout-flow-smoke.mjs` - run the frontend smoke check directly
+- `node scripts/catalog/dump-catalog.mjs` - regenerate `server/catalog.json` from `src/features/catalog/data/products.js`
 
 ## Security Checklist
 

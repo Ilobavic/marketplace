@@ -1,14 +1,14 @@
 import React, { useMemo, useState, useEffect, useRef } from 'react';
-import { products } from './data';
-import ProductList from './components/ProductList';
-import Cart from './components/Cart';
-import ProductDetail from './components/ProductDetail';
-import Payout from './components/Payout';
-import { PayoutSuccess, PayoutCancel } from './components/CheckoutReturn';
-import WelcomeIntro from './components/WelcomeIntro';
+import { products } from './features/catalog/data/products';
+import ProductList from './features/catalog/components/ProductList';
+import Cart from './features/cart/components/Cart';
+import ProductDetail from './features/catalog/components/ProductDetail';
+import Payout from './features/checkout/components/Payout';
+import { PayoutSuccess, PayoutCancel } from './features/checkout/components/CheckoutReturn';
+import WelcomeIntro from './features/marketing/components/WelcomeIntro';
 import { Container, Navbar, Badge, Button, Alert, Form } from 'react-bootstrap';
 import { Routes, Route, Link, useLocation, useNavigate, useParams } from 'react-router-dom';
-import './App.css';
+import './styles/app.css';
 
 const lookbookItems = [
   {
